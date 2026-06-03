@@ -12,7 +12,7 @@ services:
     name: inventory-api
     runtime: docker
     dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
+    dockerContext: .
     plan: free
     healthCheckPath: /health
     envVars:

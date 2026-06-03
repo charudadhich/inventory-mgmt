@@ -106,7 +106,7 @@ Frontend dev server: http://localhost:5173
 Build and push your backend image (replace `YOUR_DOCKERHUB_USER`):
 
 ```bash
-docker build -t YOUR_DOCKERHUB_USER/inventory-api:latest ./backend
+docker build -f backend/Dockerfile -t YOUR_DOCKERHUB_USER/inventory-api:latest .
 docker login
 docker push YOUR_DOCKERHUB_USER/inventory-api:latest
 ```
@@ -120,7 +120,10 @@ docker push YOUR_DOCKERHUB_USER/inventory-api:latest
 
 1. Push this repo to GitHub.
 2. On [Render](https://render.com), create a **PostgreSQL** database (free tier).
-3. Create a **Web Service** → **Docker** → point to `backend/Dockerfile`, context `backend/`.
+3. Create a **Web Service** → **Docker** with:
+   - **Dockerfile Path:** `backend/Dockerfile`
+   - **Docker Build Context:** repository root (`.` — **not** `backend` alone)
+   - Or set **Root Directory** to empty and use the paths above.
 4. Set environment variables:
    - `DATABASE_URL` — Internal connection string from Render Postgres
    - `CORS_ORIGINS` — Your Vercel/Netlify frontend URL (e.g. `https://your-app.vercel.app`)
