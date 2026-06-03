@@ -120,10 +120,16 @@ docker push YOUR_DOCKERHUB_USER/inventory-api:latest
 
 1. Push this repo to GitHub.
 2. On [Render](https://render.com), create a **PostgreSQL** database (free tier).
-3. Create a **Web Service** → **Docker** with:
-   - **Root Directory:** *(leave empty)*
-   - **Dockerfile Path:** `Dockerfile` *(at repo root, not `backend/Dockerfile`)*
-   - **Docker Build Context:** `.` *(repository root)*
+3. Create a **Web Service** → **Docker** with **either** setup:
+
+   **Option A (recommended on Render):**
+   - **Root Directory:** `backend`
+   - **Dockerfile Path:** `Dockerfile`
+
+   **Option B (repo root):**
+   - **Root Directory:** *(empty)*
+   - **Dockerfile Path:** `Dockerfile` *(the one at repo root)*
+   - **Docker Build Context:** `.`
 4. Set environment variables:
    - `DATABASE_URL` — Internal connection string from Render Postgres
    - `CORS_ORIGINS` — Your Vercel/Netlify frontend URL (e.g. `https://your-app.vercel.app`)
