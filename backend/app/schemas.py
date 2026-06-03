@@ -1,8 +1,11 @@
+import re
 from datetime import datetime
 from decimal import Decimal
 from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
+
+PHONE_DIGITS_RE = re.compile(r"^\d{10}$")
 
 
 class ProductBase(BaseModel):
@@ -34,7 +37,15 @@ class ProductResponse(ProductBase):
 class CustomerBase(BaseModel):
     full_name: Annotated[str, Field(min_length=1, max_length=255)]
     email: EmailStr
-    phone: Annotated[str, Field(min_length=1, max_length=50)]
+    phone: Annotated[str, Field(min_length=10, max_length=10)]
+
+    @field_validator("phone")
+    @classmethod
+    def validate_phone(cls, v: str) -> str:
+        digits = re.sub(r"\D", "", v.strip())
+        if not PHONE_DIGITS_RE.match(digits):
+            raise ValueError("Phone number must be exactly 10 digits")
+        return digits
 
 
 class CustomerCreate(CustomerBase):

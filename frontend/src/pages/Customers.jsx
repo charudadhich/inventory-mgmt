@@ -5,12 +5,18 @@ import Modal from '../components/Modal';
 
 const emptyForm = { full_name: '', email: '', phone: '' };
 
+function normalizePhone(value) {
+  return value.replace(/\D/g, '');
+}
+
 function validateCustomer(form) {
   const errors = {};
   if (!form.full_name?.trim()) errors.full_name = 'Full name is required';
   if (!form.email?.trim()) errors.email = 'Email is required';
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errors.email = 'Invalid email';
-  if (!form.phone?.trim()) errors.phone = 'Phone is required';
+  const phoneDigits = normalizePhone(form.phone || '');
+  if (!phoneDigits) errors.phone = 'Phone is required';
+  else if (phoneDigits.length !== 10) errors.phone = 'Phone must be exactly 10 digits';
   return errors;
 }
 
@@ -48,7 +54,7 @@ export default function Customers() {
       await api.customers.create({
         full_name: form.full_name.trim(),
         email: form.email.trim(),
-        phone: form.phone.trim(),
+        phone: normalizePhone(form.phone),
       });
       showToast('Customer created');
       setShowModal(false);
@@ -136,8 +142,16 @@ export default function Customers() {
                 {errors.email && <span className="error">{errors.email}</span>}
               </div>
               <div className="form-group">
-                <label htmlFor="phone">Phone</label>
-                <input id="phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                <label htmlFor="phone">Phone (10 digits)</label>
+                <input
+                  id="phone"
+                  type="tel"
+                  inputMode="numeric"
+                  maxLength={10}
+                  placeholder="9876543210"
+                  value={form.phone}
+                  onChange={(e) => setForm({ ...form, phone: normalizePhone(e.target.value).slice(0, 10) })}
+                />
                 {errors.phone && <span className="error">{errors.phone}</span>}
               </div>
             </div>
