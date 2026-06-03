@@ -1,5 +1,4 @@
 # Render Blueprint — deploy backend + managed PostgreSQL
-# Docs: https://render.com/docs/blueprint-spec
 
 databases:
   - name: inventory-db
@@ -11,8 +10,8 @@ services:
   - type: web
     name: inventory-api
     runtime: docker
-    rootDir: backend
     dockerfilePath: ./Dockerfile
+    dockerContext: .
     plan: free
     healthCheckPath: /health
     envVars:
